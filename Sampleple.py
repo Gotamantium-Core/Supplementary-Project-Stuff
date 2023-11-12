@@ -1,51 +1,188 @@
-import mysql.connector as mys
+import mysql.connector as con
 from random import randint 
 import datetime as date
 
-db = mys.connect(host="localhost", user='root', passwd="root", database="project2")
-c = db.cursor()
+mydb=con.connect(host='localhost',user='root',password='root', database='VKA_Automobiles')
+if mydb.is_connected():
+    print('succesfull')
 
-if db.is_connected():
-    print("Connected")
+    c = mydb.cursor()
+    
+# writing data to the table
 
-'''
-create table Purchases (CUST_ID int primary key, CUTS_NAME varchar(100), TRANSACTION_ID int, BRAND varchar(50), BRAND_ID int, AMOUNT varchar(75), BILLING_DATE date);
-'''
+# functions
 
-# from where you confirmed a car through either method
-# i.e after the while loop
+##def insert():
+##    Car_ID = int(input("Enter car ID: "))
+##    Brand = input("Enter brand: ")
+##    Model_name = input("Enter model name: ")
+##    Engine = input("Enter engine: ")
+##    Engine_type = input("Enter engine type: ")
+##    Qty_available = int(input("Enter quantity available: "))
+##    Type = input("Enter type: ")
+##    Colors = input("Enter color: ")
+##    Price = input("Enter price: ")
+##    Brand_ID = int(input("Enter brand ID: "))
+##    c.execute(f"insert into car_list values ({Car_ID}, '{Brand}', '{Model_name}', '{Engine}', '{Engine_type}', {Qty_available}, '{Type}', '{Colors}', '{Price}', {Brand_ID} ) ")
+##    mydb.commit()
+##    print("Successfully Inserted !")
+##
+##def update(carID, row, value):
+##    c.execute(f"select * from car_list where car_ID={carID}")
+##    record = c.fetchone()
+##    if row == "A":
+##        c.execute(f"update car_list set brand='{value}' where car_ID={carID}")
+##    elif row == "B":
+##        c.execute(f"update car_list set model_name='{value}' where car_ID={carID}")
+##    elif row == "C":
+##        c.execute(f"update car_list set engine='{value}' where car_ID={carID}")
+##    elif row == "D":
+##        c.execute(f"update car_list set engine_type='{value}' where car_ID={carID}")
+##    elif row == "E":
+##        c.execute(f"update car_list set qty_available={value} where car_ID={carID}")
+##    elif row == "F":
+##        c.execute(f"update car_list set type='{value}' where car_ID={carID}")
+##    elif row == "G":
+##        c.execute(f"update car_list set colors='{value}' where car_ID={carID}")
+##    elif row == "H":
+##        c.execute(f"update car_list set price='{value}' where car_ID={carID}")
+##    elif row == "I":
+##        c.execute(f"update car_list set brand_id={value} where car_ID={carID}")
+##    mydb.commit()
+##    print("Successfully Updated !")
+##
+##def delete():
+##    Car_ID = int(input("Enter car ID: "))
+##    c.execute(f"delete from car_list where Car_id={Car_ID}")
+##    mydb.commit()
+##    print("Successfully Deleted !")
+##
+##def search():
+##    carID = int(input("Enter car ID: "))
+##    c.execute(f"select * from car_list where car_id={carID}")
+##    print(c.fetchone())
+##
+##print('** WELCOME TO VKA AUTOMOBILES AT YOUR SERVICE **')
+##print('Are you an admin ?')
+##x = input('YES/NO:').lower()
+##
+##if x == "yes":
+##    password = input("Enter password: ")
+##    if password == "401526":
+##        username = input("Enter username: ")
+##        while True:
+##            print("1. Insert data \n2. Update data \n3. Delete data \n4. Search data \n5. Quit")
+##            choice = int(input("Enter function number: "))
+##            if choice == 1:  # inserting
+##                insert()
+##            elif choice == 2:  # updating
+##                car_ID = int(input("Enter car ID: "))
+##                print("A. Brand\nB. Model Name\nC. Engine\nD. Engine Type\nE. Quantity Available\nF. Type\nG. Colors\nH. Price\nI. Brand ID")
+##                choice1 = input("Enter choice: ")
+##                value = input("Enter new value: ")
+##                update(car_ID, choice1, value)
+##            elif choice == 3:  # deleting
+##                delete()
+##            elif choice == 4:  # searching
+##                search()
+##            elif choice == 5:  # quit
+##                break
+##
+x='no'
+if x == "no":
+    y = input("R U customer?: ").lower()
+    if y == "no":
+        quit()
+    elif y == "yes":
+        c.execute("select * from car_list")
+        for i in c.fetchall():
+            print(i)
 
-c.execute("select * from car_list where car_ID=1001")
-placeholder = c.fetchone()
-print(placeholder)
+            
+        while True:
+            
+            print('How would you like to proceed?')
+            print('1.Search by Car ID \n2.Seach by Brand name \n3. Proceed to checkout')
 
-try:
-    # inputs
-    cust_ID = randint(2000, 7000)
-    cust_Name = input("Enter namae: ")
-    trans_ID = randint(10_00_000, 1_80_00_000)
-    brand = placeholder[1]
-    car_ID = placeholder[0]
-    amount = placeholder[-2]
-    billing_date = str(date.datetime.now())[:11]
+            option= int(input('Enter your option:'))
+            if option==1:
+                Car_ID= int(input('Enter Car ID:'))
+                c.execute(f'select * from car_list where car_id ={Car_ID}')
+                print (c.fetchone())
+                print('Do you wish to proceed to billing? Y/N')
+                choice=input('Enter choice:')
+                #proceed to billing or not
+                if choice.lower()=='y':
+                    break
+                else:
+                    continue
 
-    record = (cust_ID, cust_Name, trans_ID, brand, car_ID, amount, billing_date)
-    # add to table
-    c.execute(f"insert into purchases values {record}")
-    db.commit()
-except:
-    print('stopp')
+              
+            
+            if option==2:
+
+                print('1.Lexus \n2.MG Motor \n3.Volvo \n4.Tata \n5.Toyota \n6.Citroen \n7.Mercedes-Benz \n8.Audi')
+                choice= input('Enter your choice:')
+                try :
+                    c.execute(f"select * from car_list where Brand='{choice}'")
+                    for i in c.fetchall():
+                        print(i)
+                    CarID=int(input('Enter Car_ID:'))
+                    print('Do you wish to proceed to billing? Y/N')
+                    choice=input('Enter choice:')
+
+                    if choice.lower()=='y':
+                        break
+                    else:
+                        continue
+
+               
+                except :
+                    print('brand not found')
+                    continue
+
+            #billing
+
+            '''
+            create table Purchases (CUST_ID int primary key, CUTS_NAME varchar(100), TRANSACTION_ID int, BRAND varchar(50), BRAND_ID int, AMOUNT varchar(75), BILLING_DATE date);
+            '''
+
+            # from where you confirmed a car through either method
+            # i.e after the while loop
+
+            c.execute(f"select * from car_list where car_ID={Car_ID}")
+            placeholder = c.fetchone()
+            print(placeholder)
+
+            try:
+                # inputs
+                cust_ID = randint(2000, 7000)
+                cust_Name = input("Enter namae: ")
+                trans_ID = randint(10_00_000, 1_80_00_000)
+                brand = placeholder[1]
+                car_ID = placeholder[0]
+                amount = placeholder[-2]
+                billing_date = str(date.datetime.now())[:11]
+
+                record = (cust_ID, cust_Name, trans_ID, brand, car_ID, amount, billing_date)
+                # add to table
+                c.execute(f"insert into Billing_Details values {record}")
+                mydb.commit()
+                break
+            except:
+                print('stop')
 
 
-## After confirmation do this
+    ## After confirmation do this
 
-c.execute("select * from purchases")
-table = c.fetchall()
+    c.execute("select * from Billing_Details")
+    table = c.fetchall()
 
-for i in table:
-    c.execute(f"insert into TABLE2 values {i}")
+    for i in table:
+        c.execute(f"insert into Transaction_history values {i}")
+    mydb.commit()
 
-print("Values added")
+    print("Values added")
 
-c.execute("delete from purchases")
-db.commit()
+    c.execute("delete from Billing_Details")
+    mydb.commit()
